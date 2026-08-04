@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import PriceChart from '@/components/PriceChart';
 import { monitoringApi } from '@/lib/api';
+import { formatPrice } from '@/lib/utils';
 import { ArrowLeft, Clock, Bell, Package, BarChart2, Grid, RefreshCw, Pause, Play, Loader2 } from 'lucide-react';
+
 
 interface Snapshot {
   id: string;
@@ -140,7 +142,7 @@ export default function MonitoringDetailPage({ params }: { params: Promise<{ id:
                 <div key={s.store_name} className="glass" style={{ padding: 14, textAlign: 'center' }}>
                   <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.06em', marginBottom: 6 }}>{s.store_name.toUpperCase()}</div>
                   <div style={{ fontSize: 20, fontWeight: 800, color: '#a78bfa', marginBottom: 4 }}>
-                    {s.price ? `$${s.price.toFixed(2)}` : 'N/A'}
+                    {formatPrice(s.price)}
                   </div>
                   <span className={`badge ${s.in_stock ? 'badge-green' : 'badge-red'}`} style={{ fontSize: 10 }}>
                     {s.in_stock ? 'In Stock' : 'Out of Stock'}
@@ -180,11 +182,12 @@ export default function MonitoringDetailPage({ params }: { params: Promise<{ id:
                     <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.05)' }}>
                       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                         <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', minWidth: 80 }}>{s.store_name}</span>
-                        <span style={{ fontSize: 16, fontWeight: 700, color: '#a78bfa' }}>{s.price ? `$${s.price.toFixed(2)}` : 'N/A'}</span>
+                        <span style={{ fontSize: 16, fontWeight: 700, color: '#a78bfa' }}>{formatPrice(s.price)}</span>
                         <span className={`badge ${s.in_stock ? 'badge-green' : 'badge-red'}`} style={{ fontSize: 10 }}>
                           {s.in_stock ? 'In Stock' : 'OOS'}
                         </span>
                       </div>
+
                       <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{new Date(s.captured_at).toLocaleString()}</span>
                     </div>
                   ))}

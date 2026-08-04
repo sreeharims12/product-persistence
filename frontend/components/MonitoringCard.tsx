@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Clock, Pause, Play, Trash2, TrendingDown, TrendingUp, Package, Bell } from 'lucide-react';
 import { monitoringApi } from '@/lib/api';
+import { formatPrice } from '@/lib/utils';
+
 
 export interface MonitoringRequest {
   id: string;
@@ -86,16 +88,17 @@ export default function MonitoringCard({ req, onDelete, onUpdate }: Props) {
         </div>
 
         {/* Price */}
-        {req.latest_price && (
+        {req.latest_price !== null && req.latest_price !== undefined && (
           <div style={{ textAlign: 'right', flexShrink: 0 }}>
             <div style={{ fontSize: 22, fontWeight: 800, color: '#a78bfa' }}>
-              ${req.latest_price.toFixed(2)}
+              {formatPrice(req.latest_price)}
             </div>
             {req.latest_store && (
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{req.latest_store}</div>
             )}
           </div>
         )}
+
       </div>
 
       {/* Stats */}

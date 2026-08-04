@@ -1,6 +1,8 @@
 'use client';
+
 import { useState } from 'react';
-import { Star, Bell, ExternalLink, Globe } from 'lucide-react';
+import { Star, Bell, ExternalLink, Globe, Package } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
 
 export interface Product {
   product_name: string;
@@ -22,6 +24,7 @@ interface Props {
 
 export default function ProductCard({ product, onMonitor, index = 0 }: Props) {
   const [hovered, setHovered] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const storeColors: Record<string, string> = {
     'Amazon': '#ff9900',
@@ -29,9 +32,7 @@ export default function ProductCard({ product, onMonitor, index = 0 }: Props) {
     'Best Buy': '#003087',
     'Target': '#cc0000',
     'eBay': '#e53238',
-    'Newegg': '#3d5a99',
-    'B&H Photo': '#1a1a1a',
-    'Costco': '#005daa',
+    'Flipkart': '#2874f0',
   };
 
   const storeColor = storeColors[product.store_name] || '#8b5cf6';
@@ -56,7 +57,40 @@ export default function ProductCard({ product, onMonitor, index = 0 }: Props) {
         animationFillMode: 'both',
       }}
     >
-      {/* Left Details */}
+      {/* Product Image Thumbnail */}
+      <div style={{
+        width: 76,
+        height: 76,
+        borderRadius: 10,
+        background: 'rgba(255, 255, 255, 0.06)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        flexShrink: 0,
+        padding: 4,
+      }}>
+        {product.image_url && !imgError ? (
+          <img
+            src={product.image_url}
+            alt={product.product_name}
+            onError={() => setImgError(true)}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain',
+              borderRadius: 6,
+              transition: 'transform 0.25s ease',
+              transform: hovered ? 'scale(1.08)' : 'scale(1)',
+            }}
+          />
+        ) : (
+          <Package size={28} color="#a78bfa" style={{ opacity: 0.6 }} />
+        )}
+      </div>
+
+      {/* Center Details */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* Store and Stock Badges */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
@@ -108,10 +142,10 @@ export default function ProductCard({ product, onMonitor, index = 0 }: Props) {
 
       {/* Right Price & Actions */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
-        {product.price && (
+        {product.price !== null && (
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: '#a78bfa' }}>
-              ${product.price.toFixed(2)}
+              {formatPrice(product.price, product.currency)}
             </div>
             <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{product.currency}</div>
           </div>
